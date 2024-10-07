@@ -1,0 +1,28 @@
+.signInContainter {
+  max-width: 600px;
+  margin-top: 60px;
+  padding: 40px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+}
+.logoStyle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-weight: bold;
+}
+hr {
+  border: 1px solid #007bff;
+  width: 80px;
+  margin: 0 auto;
+}
+
+a {
+  color: "#007bff";
+}
