@@ -1,0 +1,20 @@
+{
+  "name": "activityhub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node activityHub-BackEnd/index.js",
+    "dev": "nodemon activityHub-BackEnd/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
