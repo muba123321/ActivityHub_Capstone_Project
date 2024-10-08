@@ -2,11 +2,13 @@ import { Form, Button, Container } from "react-bootstrap";
 import logo from "../../assets/logo.png";
 import "./SignUpPageCss.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   // const [successMessage, setSuccessMessage] = useState(null);
 
   // This function is to handle and set changes to the input fields and stored in formData
@@ -53,15 +55,11 @@ export default function SignUpPage() {
 
   const validateForm = () => {
     const validationErrors = validatePassword();
-    console.log("dsdsdsdd");
-
     if (!formData.email) {
       validationErrors.email = "Email is required";
     } else if (!validateEmail(formData.email)) {
       validationErrors.email = "Please enter a valid email address";
     }
-
-    console.log(validationErrors);
 
     return validationErrors;
   };
@@ -86,13 +84,15 @@ export default function SignUpPage() {
           body: JSON.stringify(dataToSubmit),
         });
         const data = await res.json();
+
         if (!data.success) {
           setErrors({ api: data.message });
-          setFormData({});
           setLoading(false);
           return;
         }
         setLoading(false);
+        setErrors({});
+        navigate("/");
       } catch (err) {
         console.error(err);
         setErrors({ api: "Something went wrong. Please try again later." });
@@ -174,13 +174,7 @@ export default function SignUpPage() {
           type="submit"
           className="w-100 btn-lg"
         >
-          {loading ? (
-            <Spinner animation="border" role="status" size="sm">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          ) : (
-            "Sign Up"
-          )}
+          {loading ? "Loading..." : "Sign Up"}
         </Button>
         {errors.api && (
           <div className="text-danger mt-3">
