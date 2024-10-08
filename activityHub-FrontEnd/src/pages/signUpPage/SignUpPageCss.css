@@ -1,6 +1,7 @@
-.signInContainter {
+.signUpContainter {
   max-width: 600px;
   margin-top: 60px;
+  margin-bottom: 60px;
   padding: 40px;
   border-radius: 10px;
   border: 1px solid #ddd;
@@ -25,9 +26,4 @@ hr {
 
 a {
   color: "#007bff";
-}
-
-.googleButton {
-  margin-top: 10px;
-  background-color: #e65400;
 }

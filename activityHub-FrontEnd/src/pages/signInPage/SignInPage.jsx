@@ -43,7 +43,15 @@ export default function SignInPage({ setIsAuthenticated }) {
         <Button variant="primary" type="submit" className="w-100 btn-lg">
           Sign In
         </Button>
-
+        {/* Will implement google signIn in the next mvp */}
+        <Button
+          variant="primary"
+          type="submit"
+          className="googleButton w-100 btn-lg"
+        >
+          Google
+        </Button>
+        {/* The forget Password will be implemented either in this scope MVP1 or the next Scope depending on the time. */}
         <div className="mt-3 text-center">
           <a href="/forgot-password">Forgot password?</a>
         </div>
