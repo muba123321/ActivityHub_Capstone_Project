@@ -5,6 +5,7 @@ import authRouter from "./routes/auth.route.js";
 const app = express();
 
 dbConnection();
+
 const port = 3000;
 app.use(express.json());
 app.use("/api/auth", authRouter);

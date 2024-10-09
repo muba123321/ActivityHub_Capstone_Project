@@ -3,6 +3,8 @@ import logo from "../../assets/logo.png";
 import "./SignUpPageCss.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase.js";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({});
@@ -76,12 +78,24 @@ export default function SignUpPage() {
       const { confirmPassword, ...dataToSubmit } = formData;
       try {
         setLoading(true);
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          dataToSubmit.email,
+          dataToSubmit.password
+        );
+        const firebaseUser = userCredential.user;
+
         const res = await fetch("/api/auth/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(dataToSubmit),
+          body: JSON.stringify({
+            name: dataToSubmit.name,
+            email: firebaseUser.email,
+            // password: dataToSubmit.password,
+            uid: firebaseUser.uid,
+          }),
         });
         const data = await res.json();
 
@@ -92,10 +106,10 @@ export default function SignUpPage() {
         }
         setLoading(false);
         setErrors({});
-        navigate("/");
+        navigate("/sign-in");
       } catch (err) {
         console.error(err);
-        setErrors({ api: "Something went wrong. Please try again later." });
+        setErrors({ api: err.message });
         setLoading(false);
       }
     }
@@ -177,7 +191,7 @@ export default function SignUpPage() {
           {loading ? "Loading..." : "Sign Up"}
         </Button>
         {errors.api && (
-          <div className="text-danger mt-3">
+          <div className="text-danger mt-2">
             <p>{errors.api}</p>
           </div>
         )}

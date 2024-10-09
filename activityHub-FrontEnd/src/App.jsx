@@ -17,10 +17,7 @@ function App() {
           path="/"
           element={<HomePage isAuthenticated={isAuthenticated} />}
         />
-        <Route
-          path="/sign-in"
-          element={<SignInPage setIsAuthenticated={setIsAuthenticated} />}
-        />
+        <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
       </Routes>
     </Router>
