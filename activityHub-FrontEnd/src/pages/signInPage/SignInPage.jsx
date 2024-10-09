@@ -4,100 +4,18 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import "./SignInPageCss.css";
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
-  signInStart,
-  signInSuccess,
-  signInFailure,
-} from "../../redux/user/userSlice";
+  handleChange,
+  handleSubmit,
+} from "./signInControllers/formControllers";
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
-  // const [errors, setErrors] = useState(null);
-  // const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // This function is to handle and set changes to the input fields and stored in formData
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Clear errors when the user modifies the input
-    dispatch(signInFailure(null));
-  };
-
-  const validateInput = () => {
-    if (!formData.email || !formData.password) {
-      dispatch(signInFailure("Email and Password are required"));
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // setErrors(null); // Clear previous errors
-    // Client-side input validation
-    if (!validateInput()) {
-      return;
-    }
-
-    try {
-      // This signs in the user with firebase
-      dispatch(signInStart());
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      const user = userCredential.user;
-
-      // lets get the user token from firebase
-      const idToken = await user.getIdToken();
-
-      // We send the idToken to the backend to validate and retrieve User data
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ uid: user.uid }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        // If the backend responds with an error
-        dispatch(signInFailure(data.message || "Authentication Failed"));
-        // setLoading(false);
-        // setErrors(data.message || "Authentication Failed");
-        return;
-      }
-      dispatch(signInSuccess(data));
-      // setLoading(false);
-      // setErrors(null);
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-
-      if (err.code === "auth/invalid-credential") {
-        dispatch(signInFailure("Invalid Credential"));
-        // setErrors("Invalid Credential");
-      } else {
-        dispatch(
-          signInFailure(err.message || "An error occurred during sign-in")
-        );
-        // setErrors(err.message || "An error occurred during sign-in");
-      }
-    }
-  };
 
   return (
     <Container className="signInContainter">
@@ -106,7 +24,7 @@ export default function SignInPage() {
         <h2 className="mt-3">Sign In</h2>
       </div>
       <hr />
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={(e) => handleSubmit(e, formData, dispatch, navigate)}>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address:</Form.Label>
           <Form.Control
@@ -115,7 +33,7 @@ export default function SignInPage() {
             placeholder="Enter email"
             className="mb-3"
             disabled={loading}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, formData, setFormData, dispatch)}
           />
         </Form.Group>
 
@@ -127,7 +45,7 @@ export default function SignInPage() {
             placeholder="Password"
             className="mb-4"
             disabled={loading}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, formData, setFormData, dispatch)}
           />
         </Form.Group>
 

@@ -3,8 +3,10 @@ import logo from "../../assets/logo.png";
 import "./SignUpPageCss.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase.js";
+import {
+  handleChange,
+  handleSubmit,
+} from "./signUpControllers/fromControllers";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({});
@@ -13,108 +15,6 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   // const [successMessage, setSuccessMessage] = useState(null);
 
-  // This function is to handle and set changes to the input fields and stored in formData
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    // this is to clear  errors for the specific field when valid input is provided
-    if (value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: null,
-      }));
-    }
-  };
-
-  // email validation using regex
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = () => {
-    const errors = {};
-
-    //Password requirement
-    if (formData.password.length < 8) {
-      errors.password = "Password must be at least 8 characters long";
-    } else if (!/[A-Z]/.test(formData.password)) {
-      errors.password = "Password must contain at least one uppercase letter";
-    } else if (!/[0-9]/.test(formData.password)) {
-      errors.password = "Password must contain at least one number";
-    }
-
-    // Checking if password match
-    if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
-    }
-
-    return errors;
-  };
-
-  const validateForm = () => {
-    const validationErrors = validatePassword();
-    if (!formData.email) {
-      validationErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      validationErrors.email = "Please enter a valid email address";
-    }
-
-    return validationErrors;
-  };
-
-  // This function is to submit the formData when all validations are complete
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const validationErrors = validateForm();
-    setErrors(validationErrors);
-    // Here will implement logic to submit the form data to your backend AP
-
-    if (Object.keys(validationErrors).length === 0) {
-      const { confirmPassword, ...dataToSubmit } = formData;
-      try {
-        setLoading(true);
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          dataToSubmit.email,
-          dataToSubmit.password
-        );
-        const firebaseUser = userCredential.user;
-
-        const res = await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: dataToSubmit.name,
-            email: firebaseUser.email,
-            // password: dataToSubmit.password,
-            uid: firebaseUser.uid,
-          }),
-        });
-        const data = await res.json();
-
-        if (!data.success) {
-          setErrors({ api: data.message });
-          setLoading(false);
-          return;
-        }
-        setLoading(false);
-        setErrors({});
-        navigate("/sign-in");
-      } catch (err) {
-        console.error(err);
-        setErrors({ api: err.message });
-        setLoading(false);
-      }
-    }
-  };
-
   return (
     <Container className="signUpContainter">
       <div className="text-center mb-4">
@@ -122,7 +22,11 @@ export default function SignUpPage() {
         <h2 className="mt-3">Sign Up</h2>
       </div>
       <hr />
-      <Form onSubmit={handleSubmit}>
+      <Form
+        onSubmit={(e) =>
+          handleSubmit(e, formData, setErrors, setLoading, navigate)
+        }
+      >
         <Form.Group controlId="formFullName">
           <Form.Label>Full Name:</Form.Label>
           <Form.Control
@@ -130,7 +34,7 @@ export default function SignUpPage() {
             name="name"
             placeholder="Enter full name"
             className="mb-3"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
             required
           />
         </Form.Group>
@@ -142,7 +46,7 @@ export default function SignUpPage() {
             name="email"
             placeholder="Enter email"
             className="mb-3"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
             required
           />
           {errors.email && (
@@ -157,7 +61,7 @@ export default function SignUpPage() {
             name="password"
             placeholder="Password"
             className="mb-3"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
             required
           />
           {errors.password && (
@@ -172,7 +76,7 @@ export default function SignUpPage() {
             name="confirmPassword"
             placeholder="Confirm Password"
             className="mb-4"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
             required
           />
           {errors.confirmPassword && (
