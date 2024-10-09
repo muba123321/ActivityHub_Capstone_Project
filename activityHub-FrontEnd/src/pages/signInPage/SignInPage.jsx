@@ -6,12 +6,20 @@ import "./SignInPageCss.css";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../../redux/user/userSlice";
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+  // const [errors, setErrors] = useState(null);
+  // const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // This function is to handle and set changes to the input fields and stored in formData
   const handleChange = (e) => {
@@ -22,12 +30,12 @@ export default function SignInPage() {
     });
 
     // Clear errors when the user modifies the input
-    setErrors(null);
+    dispatch(signInFailure(null));
   };
 
   const validateInput = () => {
     if (!formData.email || !formData.password) {
-      setErrors("Email and Password are required");
+      dispatch(signInFailure("Email and Password are required"));
       return false;
     }
     return true;
@@ -35,7 +43,7 @@ export default function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors(null); // Clear previous errors
+    // setErrors(null); // Clear previous errors
     // Client-side input validation
     if (!validateInput()) {
       return;
@@ -43,7 +51,7 @@ export default function SignInPage() {
 
     try {
       // This signs in the user with firebase
-      setLoading(true);
+      dispatch(signInStart());
       const userCredential = await signInWithEmailAndPassword(
         auth,
         formData.email,
@@ -67,16 +75,27 @@ export default function SignInPage() {
       const data = await res.json();
       if (!res.ok || !data.success) {
         // If the backend responds with an error
-        setLoading(false);
-        setErrors(data.message || "Authentication Failed");
+        dispatch(signInFailure(data.message || "Authentication Failed"));
+        // setLoading(false);
+        // setErrors(data.message || "Authentication Failed");
         return;
       }
-      setLoading(false);
-      setErrors(null);
+      dispatch(signInSuccess(data));
+      // setLoading(false);
+      // setErrors(null);
       navigate("/");
     } catch (err) {
-      setLoading(false);
-      setErrors(err.message || "An error occurred during sign-in");
+      console.log(err);
+
+      if (err.code === "auth/invalid-credential") {
+        dispatch(signInFailure("Invalid Credential"));
+        // setErrors("Invalid Credential");
+      } else {
+        dispatch(
+          signInFailure(err.message || "An error occurred during sign-in")
+        );
+        // setErrors(err.message || "An error occurred during sign-in");
+      }
     }
   };
 
@@ -129,9 +148,9 @@ export default function SignInPage() {
         >
           Google
         </Button>
-        {errors && (
+        {error && (
           <div className="text-danger mt-2">
-            <p>{errors}</p>
+            <p>{error}</p>
           </div>
         )}
         {/* The forget Password will be implemented either in this scope MVP1 or the next Scope depending on the time. */}
