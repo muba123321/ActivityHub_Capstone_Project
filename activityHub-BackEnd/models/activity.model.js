@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+const { Schema } = mongoose;
+
 const commentSchema = new mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -90,9 +92,17 @@ const activitySchema = new mongoose.Schema(
       enum: ["public", "private"],
       default: "public",
     },
+    time: {
+      type: String,
+      required: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
     imageUrls: {
-      type: Array,
-      default: "https://picsum.photos/seed/picsum/200/300",
+      type: [String],
+      default: ["https://picsum.photos/seed/picsum/200/300"],
     },
     createdBy: {
       type: Schema.Types.ObjectId,
