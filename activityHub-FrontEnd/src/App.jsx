@@ -6,17 +6,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null); // Stores user data after login
-
   return (
     <Router>
-      <Header isAuthenticated={isAuthenticated} user={user} />
+      <Header />
       <Routes>
-        <Route
-          path="/"
-          element={<HomePage isAuthenticated={isAuthenticated} />}
-        />
+        <Route path="/" element={<HomePage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
       </Routes>

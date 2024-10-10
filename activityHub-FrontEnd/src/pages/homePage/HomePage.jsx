@@ -1,8 +1,10 @@
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import WelcomeScreen from "./components/WelcomeScreen.jsx";
+import { useSelector } from "react-redux";
 
-export default function HomePage({ isAuthenticated }) {
-  if (!isAuthenticated) {
+export default function HomePage() {
+  const { currentUser } = useSelector((state) => state.user);
+  if (!currentUser) {
     return <WelcomeScreen />;
   }
   return (

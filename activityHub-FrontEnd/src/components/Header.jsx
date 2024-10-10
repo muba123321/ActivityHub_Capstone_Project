@@ -2,9 +2,16 @@ import { Navbar, Nav, Form, Button, Dropdown } from "react-bootstrap";
 import logo from "../assets/logo.png";
 import profileImage from "../assets/activityPoster.png";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-export default function Header({ isAuthenticated, user }) {
+export default function Header() {
+  const { currentUser } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
+
+  const user = currentUser.user;
+
+  const firstName = currentUser ? user.name.split(" ")[0] : "";
 
   const handleLogout = () => {
     // Implement logout functionality here
@@ -24,7 +31,7 @@ export default function Header({ isAuthenticated, user }) {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        {isAuthenticated ? (
+        {currentUser ? (
           <>
             <Form className="d-flex mx-auto" style={{ width: "400px" }}>
               <Form.Control
@@ -37,11 +44,11 @@ export default function Header({ isAuthenticated, user }) {
             <Dropdown align="end">
               <Dropdown.Toggle variant="light" id="dropdown-basic">
                 <img
-                  src={profileImage}
+                  src={user.avatar}
                   alt="Profile"
                   style={{ width: 40, height: 40, borderRadius: "50%" }}
                 />
-                <span className="ms-2">{user ? user.name : "User"}</span>
+                <span className="ms-2">{firstName}</span>
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item href="#/profile">Profile</Dropdown.Item>
