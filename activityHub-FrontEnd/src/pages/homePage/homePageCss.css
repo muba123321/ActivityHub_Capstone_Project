@@ -14,3 +14,31 @@
 .activityImage:hover {
   transform: scale(1.02);
 }
+
+/* General styling for the HomePage layout */
+.home-container {
+  padding: 20px;
+}
+
+.posts-column {
+  padding-right: 20px; /* Add some space between the columns */
+}
+
+.activities-column {
+  padding-left: 20px;
+}
+
+/* Styling for individual post */
+.post-image {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover; /* Ensures the image looks good and responsive */
+}
+
+/* Styling for buttons inside the post card */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
