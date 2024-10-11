@@ -44,3 +44,25 @@
   justify-content: space-between;
   margin-top: 10px;
 }
+
+.floating-icons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.create-post-icon,
+.create-activity-icon {
+  cursor: pointer;
+  color: #007bff;
+  transition: transform 0.2s;
+}
+
+.create-post-icon:hover,
+.create-activity-icon:hover {
+  transform: scale(1.2);
+  color: rgb(1, 71, 1);
+}

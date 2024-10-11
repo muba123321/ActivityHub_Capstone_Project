@@ -49,7 +49,7 @@ export default function Header() {
                 <span className="ms-2">{firstName}</span>
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item href="#/profile">Profile</Dropdown.Item>
+                <Dropdown.Item href="/profile">Profile</Dropdown.Item>
                 <Dropdown.Item href="#/settings">Settings</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() =>
