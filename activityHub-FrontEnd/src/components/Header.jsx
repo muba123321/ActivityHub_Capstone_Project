@@ -1,23 +1,21 @@
 import { Navbar, Nav, Form, Button, Dropdown } from "react-bootstrap";
 import logo from "../assets/logo.png";
-import profileImage from "../assets/activityPoster.png";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signOutUserFailure,
+  signOutUserStart,
+  signOutUserSuccess,
+} from "../redux/user/userSlice";
+import { handleLogout } from "../controllers/SignOutController";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-
-  const user = currentUser.user;
-
-  const firstName = currentUser ? user.name.split(" ")[0] : "";
-
-  const handleLogout = () => {
-    // Implement logout functionality here
-    console.log("User logged out");
-    navigate("/sign-in");
-  };
+  const firstName = currentUser ? currentUser.user.name.split(" ")[0] : "";
 
   return (
     <Navbar
@@ -44,7 +42,7 @@ export default function Header() {
             <Dropdown align="end">
               <Dropdown.Toggle variant="light" id="dropdown-basic">
                 <img
-                  src={user.avatar}
+                  src={currentUser.user.avatar}
                   alt="Profile"
                   style={{ width: 40, height: 40, borderRadius: "50%" }}
                 />
@@ -53,7 +51,20 @@ export default function Header() {
               <Dropdown.Menu>
                 <Dropdown.Item href="#/profile">Profile</Dropdown.Item>
                 <Dropdown.Item href="#/settings">Settings</Dropdown.Item>
-                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() =>
+                    handleLogout(
+                      dispatch,
+                      signOut,
+                      auth,
+                      signOutUserStart,
+                      signOutUserSuccess,
+                      signOutUserFailure
+                    )
+                  }
+                >
+                  Logout
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </>

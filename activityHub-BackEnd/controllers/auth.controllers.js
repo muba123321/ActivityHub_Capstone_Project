@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 // import bcryptjs from "bcryptjs";
 
-export const signup = async (req, res, next) => {
+export const signUp = async (req, res, next) => {
   const {
     name,
     email,
@@ -36,7 +36,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
-export const signin = async (req, res, next) => {
+export const signIn = async (req, res, next) => {
   try {
     const idToken = req.headers.authorization?.split(" ")[1];
     if (!idToken) {
@@ -61,6 +61,18 @@ export const signin = async (req, res, next) => {
       success: true,
       message: "User authenticated successfully",
       user: validUser,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const signOut = (req, res, next) => {
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json({
+      success: true,
+      message: "User signed out successfully",
     });
   } catch (err) {
     next(err);

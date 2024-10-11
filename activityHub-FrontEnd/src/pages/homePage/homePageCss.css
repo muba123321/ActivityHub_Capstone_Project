@@ -3,8 +3,10 @@
 }
 
 .activityImage {
-  width: 43%;
-  height: 60%;
+  max-width: 50%;
+  height: auto;
+  /* width: 43%;
+  height: 60%; */
   box-shadow: 0 0 10px rgba(0, 0, 0);
   margin-top: 30px;
   margin-bottom: 30px;
@@ -21,7 +23,7 @@
 }
 
 .posts-column {
-  padding-right: 20px; /* Add some space between the columns */
+  padding-right: 20px;
 }
 
 .activities-column {
@@ -33,7 +35,7 @@
   width: 100%;
   height: auto;
   max-height: 400px;
-  object-fit: cover; /* Ensures the image looks good and responsive */
+  object-fit: cover;
 }
 
 /* Styling for buttons inside the post card */

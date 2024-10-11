@@ -6,11 +6,14 @@ export default function WelcomeScreen() {
   return (
     <Container className="welcomeContainer text-center d-flex align-items-center justify-content-center vh-100">
       <h1>Welcome to ActivityHub</h1>
-      <img className="activityImage" src={activityImage} alt="Activity Image" />
-      <h5>Please sign in create and join activities.</h5>
-      <Button className="mt-4" variant="primary" href="/sign-in">
-        Sign In
-      </Button>
+      <h5>Click the image to Sign in and enjoy the fun!!.</h5>
+      <a href="/sign-in">
+        <img
+          className="activityImage"
+          src={activityImage}
+          alt="Activity Image"
+        />
+      </a>
     </Container>
   );
 }
