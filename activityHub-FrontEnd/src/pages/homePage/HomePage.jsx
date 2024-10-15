@@ -17,10 +17,11 @@ export default function HomePage() {
     <Container fluid className="home-container">
       <Row className="mt-4">
         {/* Left Side: Posts (60%) */}
-        <PostScreen />
+        <AcitivityScreen />
 
         {/* Right Side: Activities (40%) */}
-        <AcitivityScreen />
+
+        <PostScreen />
       </Row>
       <div className="floating-icons">
         <FaPlusCircle

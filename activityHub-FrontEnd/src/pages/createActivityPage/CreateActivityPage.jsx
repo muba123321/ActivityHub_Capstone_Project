@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import "./createActivityPage.css";
 
 export default function CreateActivityPage() {
   const [formData, setFormData] = useState({
@@ -25,13 +26,13 @@ export default function CreateActivityPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add logic to submit activity to the backend
+    //  logic to submit activity to the backend
     console.log("Activity created:", formData);
     navigate("/"); // Navigate back to the home page after activity creation
   };
 
   return (
-    <Container>
+    <Container className="activity-container">
       <h2>Create Activity</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formActivityTitle">

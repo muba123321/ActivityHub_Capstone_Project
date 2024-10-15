@@ -3,7 +3,7 @@ import { Col, Card, Button } from "react-bootstrap";
 
 export default function PostScreen() {
   return (
-    <Col lg={7} className="posts-column">
+    <Col lg={5} className="posts-column">
       <h3>Latest Posts</h3>
 
       {/* Example Post */}

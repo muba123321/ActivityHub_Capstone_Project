@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Card, Button } from "react-bootstrap";
 export default function AcitivityScreen() {
   return (
-    <Col lg={5} className="activities-column">
+    <Col lg={7} className="activities-column">
       <h3>Available Activities</h3>
 
       {/* Example Activity */}
