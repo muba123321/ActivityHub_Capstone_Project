@@ -2,6 +2,7 @@ import { Navbar, Nav, Form, Button, Dropdown } from "react-bootstrap";
 import logo from "../assets/logo.png";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,6 +14,7 @@ import { handleLogout } from "../controllers/SignOutController";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const firstName = currentUser ? currentUser.user.name.split(" ")[0] : "";
@@ -24,7 +26,11 @@ export default function Header() {
       className="mb-3"
       style={{ padding: "10px 20px" }}
     >
-      <Navbar.Brand href="/" className="align-items-center text-center">
+      <Navbar.Brand
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer" }}
+        className="align-items-center text-center"
+      >
         <img src={logo} width="45" height="45" alt="Logo" /> ActivityHub
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />

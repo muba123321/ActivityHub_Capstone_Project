@@ -64,6 +64,7 @@ export const handleSubmit = async (e, formData, dispatch, navigate) => {
 
       return;
     }
+    console.log(data);
     dispatch(signInSuccess(data));
 
     navigate("/");

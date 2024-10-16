@@ -106,16 +106,25 @@ class ActivityControllers {
 
   async getActivities(req, res, next) {
     try {
+      const { page = 1, limit = 5 } = req.query;
       const activities = await Activity.find()
+        .skip((page - 1) * limit)
+        .limit(parseInt(limit))
         .populate("createdBy", "name email")
         .populate("participants", "name email")
         .populate("invitedUsers", "name email");
+
+      const totalActivities = await Activity.countDocuments();
+      const totalPages = Math.ceil(totalActivities / limit);
+
       res.status(200).json({
         succes: true,
         activities,
+        totalPages,
       });
     } catch (err) {
       next(err);
+      console.error("Error fetching activities:", err);
     }
   }
 

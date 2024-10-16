@@ -1,12 +1,11 @@
 import React from "react";
-import { Col, Card, Button } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 
 export default function PostScreen() {
   return (
-    <Col lg={5} className="posts-column">
+    <>
       <h3>Latest Posts</h3>
 
-      {/* Example Post */}
       <Card className="mb-3">
         <Card.Body>
           <Card.Title>John Doe</Card.Title>
@@ -15,7 +14,7 @@ export default function PostScreen() {
             event.
           </Card.Text>
           <img
-            src="https://via.placeholder.com/600x300" // Placeholder image for now
+            src="https://via.placeholder.com/600x300"
             alt="Post"
             className="post-image mb-2"
           />
@@ -28,6 +27,6 @@ export default function PostScreen() {
       </Card>
 
       {/* More posts will be dynamically rendered here */}
-    </Col>
+    </>
   );
 }

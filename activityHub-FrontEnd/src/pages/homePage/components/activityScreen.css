@@ -1,0 +1,17 @@
+.activities-column {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.activity-carousel img {
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
