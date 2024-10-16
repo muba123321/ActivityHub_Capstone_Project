@@ -4,28 +4,17 @@ import { errorHandler } from "../utils/error.js";
 // import bcryptjs from "bcryptjs";
 
 export const signUp = async (req, res, next) => {
-  const {
-    name,
-    email,
-    // password,
-    uid,
-  } = req.body;
-  const existingUser = await User.findOne({ uid });
-  if (existingUser) {
-    return res.status(400).json({
-      success: false,
-      message: "User already exists",
-    });
-  }
-  //   const hashedPassword = await bcryptjs.hash(password, 10);
-  const user = new User({
-    name,
-    email,
-    // password: hashedPassword,
-    uid,
-  });
+  const { name, email, uid } = req.body;
+
   try {
+    const existingUser = await User.findOne({ uid });
+    if (existingUser) {
+      return next(errorHandler(400, "User already exists"));
+    }
+
+    const user = new User({ name, email, uid });
     await user.save();
+
     res.status(201).json({
       success: true,
       message: "User created successfully",

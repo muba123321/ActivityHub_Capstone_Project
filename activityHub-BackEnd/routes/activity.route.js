@@ -1,6 +1,6 @@
 import express from "express";
-import ActivityControllers from "../controllers/activity.controllers";
-import { verifyUserToken } from "../utils/verifyUserToken";
+import ActivityControllers from "../controllers/activity.controllers.js";
+import { verifyUserToken } from "../utils/verifyUserToken.js";
 
 const router = express.Router();
 

@@ -1,4 +1,5 @@
-import Activity from "../models/activity.model";
+import Activity from "../models/activity.model.js";
+import User from "../models/user.model.js";
 
 class ActivityControllers {
   async createActivity(req, res, next) {
@@ -14,6 +15,8 @@ class ActivityControllers {
         date,
         imageUrls,
       } = req.body;
+
+      const user = await User.findOne({ uid: req.user.uid });
       // This check to ensure link or address in provided depending on the the type selected.
       if (type === "online" && !link) {
         return res.status(400).json({
@@ -39,7 +42,7 @@ class ActivityControllers {
         time,
         date,
         imageUrls,
-        createdBy: req.user.uid,
+        createdBy: user._id,
       });
       await activity.save();
 

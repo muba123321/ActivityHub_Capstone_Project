@@ -9,6 +9,7 @@ dbConnection();
 
 const port = 3000;
 app.use(express.json());
+
 app.use("/api/auth", authRouter);
 app.use("/api/activities", activityRoutes);
 
