@@ -14,10 +14,11 @@ import { handleLogout } from "../controllers/SignOutController";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const firstName = currentUser ? currentUser.user.name.split(" ")[0] : "";
+  const firstName = currentUser ? currentUser.name.split(" ")[0] : "";
 
   return (
     <Navbar
@@ -48,7 +49,7 @@ export default function Header() {
             <Dropdown align="end">
               <Dropdown.Toggle variant="light" id="dropdown-basic">
                 <img
-                  src={currentUser.user.avatar}
+                  src={currentUser.avatar}
                   alt="Profile"
                   style={{ width: 40, height: 40, borderRadius: "50%" }}
                 />

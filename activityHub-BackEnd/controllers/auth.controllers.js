@@ -4,9 +4,23 @@ import { errorHandler } from "../utils/error.js";
 // import bcryptjs from "bcryptjs";
 
 export const signUp = async (req, res, next) => {
-  const { name, email, uid } = req.body;
+  const {
+    name,
+    email,
+    //  uid
+  } = req.body;
 
   try {
+    const idToken = req.headers.authorization?.split(" ")[1];
+    if (!idToken) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized: No token provided" });
+    }
+
+    const decodedIdToken = await admin.auth().verifyIdToken(idToken);
+    const { uid } = decodedIdToken;
+
     const existingUser = await User.findOne({ uid });
     if (existingUser) {
       return next(errorHandler(400, "User already exists"));
@@ -15,6 +29,11 @@ export const signUp = async (req, res, next) => {
     const user = new User({ name, email, uid });
     await user.save();
 
+    res.cookie("access_token", idToken, {
+      httpOnly: true,
+      // secure: true,
+      // sameSite: "strict",
+    });
     res.status(201).json({
       success: true,
       message: "User created successfully",

@@ -64,8 +64,8 @@ export const handleSubmit = async (e, formData, dispatch, navigate) => {
 
       return;
     }
-    console.log(data);
-    dispatch(signInSuccess(data));
+
+    dispatch(signInSuccess({ user: data.user, idToken: idToken }));
 
     navigate("/");
   } catch (err) {

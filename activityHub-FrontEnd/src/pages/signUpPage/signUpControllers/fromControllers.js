@@ -1,20 +1,27 @@
 import { auth } from "../../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../../../redux/user/userSlice";
 
 // This function is to handle and set changes to the input fields and stored in formData
-export const handleChange = (e, formData, setFormData, setErrors) => {
+export const handleChange = (
+  e,
+  formData,
+  setFormData,
+  dispatch
+  // setErrors
+) => {
   const { name, value } = e.target;
   setFormData({
     ...formData,
     [name]: value,
   });
   // this is to clear  errors for the specific field when valid input is provided
-  if (value) {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: null,
-    }));
-  }
+
+  dispatch(signInFailure(""));
 };
 
 // email validation using regex
@@ -23,88 +30,95 @@ const validateEmail = (email) => {
   return emailRegex.test(email);
 };
 
-const validatePassword = (formData) => {
-  const errors = {};
+const validatePassword = (formData, dispatch) => {
+  // Clear previous errors
+  dispatch(signInFailure(""));
 
   //Password requirement
   if (formData.password.length < 8) {
-    errors.password = "Password must be at least 8 characters long";
+    dispatch(signInFailure("Password must be at least 8 characters long"));
+    return false;
   } else if (!/[A-Z]/.test(formData.password)) {
-    errors.password = "Password must contain at least one uppercase letter";
+    dispatch(
+      signInFailure("Password must contain at least one uppercase letter")
+    );
+    return false;
   } else if (!/[0-9]/.test(formData.password)) {
-    errors.password = "Password must contain at least one number";
+    dispatch(signInFailure("Password must contain at least one number"));
+    return false;
   }
 
   // Checking if password match
   if (formData.password !== formData.confirmPassword) {
-    errors.confirmPassword = "Passwords do not match";
+    dispatch(signInFailure("Passwords do not match"));
+    return false;
   }
 
-  return errors;
+  return true;
 };
 
-const validateForm = (formData) => {
-  const validationErrors = validatePassword(formData);
+const validateForm = (formData, dispatch) => {
+  const isPasswordValid = validatePassword(formData, dispatch);
+  if (!isPasswordValid) return false;
+
   if (!formData.email) {
-    validationErrors.email = "Email is required";
+    dispatch(signInFailure("Email is required"));
+    return false;
   } else if (!validateEmail(formData.email)) {
-    validationErrors.email = "Please enter a valid email address";
+    dispatch(signInFailure("Invalid email address"));
+    return false;
   }
 
-  return validationErrors;
+  return true;
 };
 
 // This function is to submit the formData when all validations are complete
-export const handleSubmit = async (
-  e,
-  formData,
-  setErrors,
-  setLoading,
-  navigate
-) => {
+export const handleSubmit = async (e, formData, dispatch, navigate) => {
   e.preventDefault();
 
-  const validationErrors = validateForm(formData);
-  setErrors(validationErrors);
-  // Here will implement logic to submit the form data to your backend AP
-
-  if (Object.keys(validationErrors).length === 0) {
-    const { confirmPassword, ...dataToSubmit } = formData;
-    try {
-      setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        dataToSubmit.email,
-        dataToSubmit.password
-      );
-      const firebaseUser = userCredential.user;
-
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: dataToSubmit.name,
-          email: firebaseUser.email,
-
-          uid: firebaseUser.uid,
-        }),
-      });
-      const data = await res.json();
-
-      if (!data.success) {
-        setErrors({ api: data.message });
-        setLoading(false);
-        return;
-      }
-      setLoading(false);
-      setErrors({});
-      navigate("/sign-in");
-    } catch (err) {
-      console.error(err);
-      setErrors({ api: err.message });
-      setLoading(false);
-    }
+  if (!validateForm(formData, dispatch)) {
+    return;
   }
+  const { confirmPassword, ...dataToSubmit } = formData;
+  try {
+    dispatch(signInStart());
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      dataToSubmit.email,
+      dataToSubmit.password
+    );
+    const firebaseUser = userCredential.user;
+
+    const idToken = await firebaseUser.getIdToken();
+
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({
+        name: dataToSubmit.name,
+        email: firebaseUser.email,
+      }),
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      dispatch(signInFailure(data.message || "Failed to create user account"));
+
+      return;
+    }
+    dispatch(
+      signInSuccess({
+        user: data.user,
+        idToken: idToken,
+      })
+    );
+
+    navigate("/");
+  } catch (err) {
+    dispatch(signInFailure(err.message || "Sign-up failed"));
+  }
+  // }
 };

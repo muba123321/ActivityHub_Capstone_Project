@@ -159,8 +159,10 @@ class ActivityControllers {
           .json({ success: false, message: "Activity not found" });
       }
 
+      const user = await User.findOne({ uid: req.user.uid });
+
       // Check if the user is the creator
-      if (activity.createdBy.toString() !== req.user.uid) {
+      if (activity.createdBy.toString() !== user._id.toString()) {
         return res.status(403).json({
           success: false,
           message: "Unauthorized to delete this activity",

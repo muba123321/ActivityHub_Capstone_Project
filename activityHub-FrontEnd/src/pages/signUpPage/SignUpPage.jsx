@@ -7,13 +7,14 @@ import {
   handleChange,
   handleSubmit,
 } from "./signUpControllers/fromControllers";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [successMessage, setSuccessMessage] = useState(null);
 
   return (
     <Container className="signUpContainter">
@@ -22,11 +23,7 @@ export default function SignUpPage() {
         <h2 className="mt-3">Sign Up</h2>
       </div>
       <hr />
-      <Form
-        onSubmit={(e) =>
-          handleSubmit(e, formData, setErrors, setLoading, navigate)
-        }
-      >
+      <Form onSubmit={(e) => handleSubmit(e, formData, dispatch, navigate)}>
         <Form.Group controlId="formFullName">
           <Form.Label>Full Name:</Form.Label>
           <Form.Control
@@ -34,7 +31,8 @@ export default function SignUpPage() {
             name="name"
             placeholder="Enter full name"
             className="mb-3"
-            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
+            disabled={loading}
+            onChange={(e) => handleChange(e, formData, setFormData, dispatch)}
             required
           />
         </Form.Group>
@@ -46,12 +44,10 @@ export default function SignUpPage() {
             name="email"
             placeholder="Enter email"
             className="mb-3"
-            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
+            disabled={loading}
+            onChange={(e) => handleChange(e, formData, setFormData, dispatch)}
             required
           />
-          {errors.email && (
-            <Form.Text className="text-danger">{errors.email}</Form.Text>
-          )}
         </Form.Group>
 
         <Form.Group controlId="formBasicPassword">
@@ -60,13 +56,11 @@ export default function SignUpPage() {
             type="password"
             name="password"
             placeholder="Password"
+            disabled={loading}
             className="mb-3"
-            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
+            onChange={(e) => handleChange(e, formData, setFormData, dispatch)}
             required
           />
-          {errors.password && (
-            <Form.Text className="text-danger">{errors.password}</Form.Text>
-          )}
         </Form.Group>
 
         <Form.Group controlId="formConfirmPassword">
@@ -75,15 +69,11 @@ export default function SignUpPage() {
             type="password"
             name="confirmPassword"
             placeholder="Confirm Password"
+            disabled={loading}
             className="mb-4"
-            onChange={(e) => handleChange(e, formData, setFormData, setErrors)}
+            onChange={(e) => handleChange(e, formData, setFormData, dispatch)}
             required
           />
-          {errors.confirmPassword && (
-            <Form.Text className="text-danger">
-              {errors.confirmPassword}
-            </Form.Text>
-          )}
         </Form.Group>
 
         <Button
@@ -94,9 +84,9 @@ export default function SignUpPage() {
         >
           {loading ? "Loading..." : "Sign Up"}
         </Button>
-        {errors.api && (
+        {error && (
           <div className="text-danger mt-2">
-            <p>{errors.api}</p>
+            <p>{error}</p>
           </div>
         )}
 
