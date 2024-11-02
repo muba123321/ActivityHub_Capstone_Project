@@ -8,6 +8,7 @@ import CreateActivityPage from "./pages/createActivityPage/CreateActivityPage";
 import CreatePostPage from "./pages/createPostPage/CreatePostPage";
 import PrivateRoute from "./components/PrivateRoute";
 import EditActivityPage from "./pages/editActivityPage/EditActivityPage";
+import ForgotPasswordScreen from "./pages/signInPage/components/ForgotPasswordScreen";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sign-in" element={<SignInPage />} />
+
+        <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route element={<PrivateRoute />}>
