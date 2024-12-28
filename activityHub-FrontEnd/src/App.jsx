@@ -9,6 +9,7 @@ import CreatePostPage from "./pages/createPostPage/CreatePostPage";
 import PrivateRoute from "./components/PrivateRoute";
 import EditActivityPage from "./pages/editActivityPage/EditActivityPage";
 import ForgotPasswordScreen from "./pages/signInPage/components/ForgotPasswordScreen";
+import ResetPasswordScreen from "./pages/signInPage/components/ResetpasswordScreen";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/sign-in" element={<SignInPage />} />
 
         <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+        <Route path="/reset-password" element={<ResetPasswordScreen />} />
 
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/profile" element={<ProfilePage />} />

@@ -22,12 +22,18 @@ export default function ForgotPasswordScreen() {
     setIsButtonDisabled(true);
 
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, email, {
+        url: "http://localhost:5173/reset-password",
+      });
       setMessage("Password reset email sent! Check your inbox.");
       setError("");
     } catch (err) {
       setMessage("");
-      setError("Failed to send reset email. Please try again.");
+      setError(
+        err.code === "auth/user-not-found"
+          ? "No account found with this email."
+          : "Failed to send reset email. Please try again."
+      );
     } finally {
       setIsButtonDisabled(false); // Re-enable the button after request is complete
     }
