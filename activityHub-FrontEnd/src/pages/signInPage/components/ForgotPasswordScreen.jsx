@@ -1,73 +1,74 @@
 import React, { useState } from "react";
 import { auth } from "../../../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { Container, Form, Button, Alert } from "react-bootstrap";
-import "./ForgotPasswordScreen.css";
+import { Container, Form, Button, Alert, Spinner } from "react-bootstrap";
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+  const actionCodeSettings = {
+    url: "http://localhost:5173/sign-in",
+    handleCodeInApp: true,
+  };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setError("");
 
-    // Check if email is valid and disable the button
     if (!validateEmail(email)) {
       setError("Invalid email format. Please enter a valid email.");
       return;
     }
 
-    setIsButtonDisabled(true);
+    setIsLoading(true);
 
     try {
-      await sendPasswordResetEmail(auth, email, {
-        url: "http://localhost:5173/reset-password",
-      });
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
       setMessage("Password reset email sent! Check your inbox.");
-      setError("");
     } catch (err) {
-      setMessage("");
       setError(
         err.code === "auth/user-not-found"
           ? "No account found with this email."
           : "Failed to send reset email. Please try again."
       );
     } finally {
-      setIsButtonDisabled(false); // Re-enable the button after request is complete
+      setIsLoading(false);
     }
   };
 
-  const validateEmail = (email) => {
-    // Basic email pattern check
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  };
-
   return (
-    <Container className="forgot-password-container d-flex align-items-center justify-content-center">
-      <div className="forgot-password-card">
+    <Container
+      className="d-flex justify-content-center align-items-center"
+      style={{ height: "100vh" }}
+    >
+      <div style={{ maxWidth: "400px", width: "100%" }}>
         <h2 className="text-center mb-4">Forgot Password</h2>
         <Form onSubmit={handleResetPassword}>
           <Form.Group controlId="formEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>Email Address</Form.Label>
             <Form.Control
               type="email"
-              placeholder="Enter email"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="custom-input"
             />
           </Form.Group>
-          <Button
-            variant="primary"
-            type="submit"
-            className="w-100 mt-3"
-            disabled={isButtonDisabled}
-          >
-            {isButtonDisabled ? "Sending..." : "Send Reset Email"}
+          <Button type="submit" className="w-100 mt-3" disabled={isLoading}>
+            {isLoading ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              "Send Reset Email"
+            )}
           </Button>
           {message && (
             <Alert variant="success" className="mt-3">

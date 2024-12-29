@@ -9,7 +9,7 @@ import CreatePostPage from "./pages/createPostPage/CreatePostPage";
 import PrivateRoute from "./components/PrivateRoute";
 import EditActivityPage from "./pages/editActivityPage/EditActivityPage";
 import ForgotPasswordScreen from "./pages/signInPage/components/ForgotPasswordScreen";
-import ResetPasswordScreen from "./pages/signInPage/components/ResetpasswordScreen";
+// import ResetPasswordScreen from "./pages/signInPage/components/ResetpasswordScreen";
 
 function App() {
   return (
@@ -18,13 +18,12 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sign-in" element={<SignInPage />} />
-
-        <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
-        <Route path="/reset-password" element={<ResetPasswordScreen />} />
-
         <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+        {/* <Route path="/reset-password" element={<ResetPasswordScreen />} /> */}
+
         <Route element={<PrivateRoute />}>
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/create-post" element={<CreatePostPage />} />
           <Route path="/create-activity" element={<CreateActivityPage />} />
           <Route path="/edit-activity" element={<EditActivityPage />} />
